@@ -1,3 +1,6 @@
+/*！
+  堆分配器，承接用户程序的动态内存分配功能，下接 buddy system 算法，上承用户程序
+*/
 use crate::config::KERNEL_HEAP_SIZE;
 use buddy_system_allocator::LockedHeap;
 use core::ptr::addr_of_mut;
@@ -13,7 +16,7 @@ pub fn handle_alloc_error(layout: core::alloc::Layout) -> ! {
 static mut HEAP_SPACE: [u8; KERNEL_HEAP_SIZE] = [0; KERNEL_HEAP_SIZE];
 
 pub fn init_heap() {
-    unsafe {
+    unsafe { // 由buddy system 分配器自行管理
         HEAP_ALLOCATOR
             .lock()
             .init(addr_of_mut!(HEAP_SPACE) as usize, KERNEL_HEAP_SIZE);

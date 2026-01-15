@@ -1,3 +1,6 @@
+/*！
+ 定时器抽象层，承接任务调度器的定时器功能，下接 RISC-V Timer 硬件，上承用户程序
+*/
 use core::cmp::Ordering;
 
 use crate::config::CLOCK_FREQ;
@@ -29,12 +32,17 @@ pub struct TimerCondVar {
     pub task: Arc<TaskControlBlock>,
 }
 
+// 相等性比较实现，只比较俩 TimerCondVar 的过期时间，
+// 即使关联的任务不一样，只要过期时间一样那就认为相等。允许定时器按照时间排序
 impl PartialEq for TimerCondVar {
     fn eq(&self, other: &Self) -> bool {
         self.expire_ms == other.expire_ms
     }
 }
+
 impl Eq for TimerCondVar {}
+// 排序实现，反向排序，将过期时间转换为负数进行比较，实现最小堆的效果
+// 过期时间越小的 TimerCondvar 在排序中优先级就会越高
 impl PartialOrd for TimerCondVar {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let a = -(self.expire_ms as isize);

@@ -1,3 +1,6 @@
+/*！
+ panic 处理和栈帧打印。
+*/
 use crate::sbi::shutdown;
 use crate::task::current_kstack_top;
 use core::arch::asm;
@@ -26,6 +29,7 @@ fn backtrace() {
     unsafe {
         asm!("mv {}, s0", out(reg) fp);
     }
+    // 栈帧布局：ra, fp, ..., args
     println!("---START BACKTRACE---");
     for i in 0..10 {
         if fp == stop {

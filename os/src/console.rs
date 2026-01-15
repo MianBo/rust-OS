@@ -1,3 +1,6 @@
+/*！
+  控制台抽象层，承接用户程序的标准输出功能，下接 ns16550a 串口硬件，上承用户程序
+*/
 use crate::drivers::chardev::CharDevice;
 use crate::drivers::chardev::UART;
 use core::fmt::{self, Write};

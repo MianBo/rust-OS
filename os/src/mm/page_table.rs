@@ -53,11 +53,10 @@ impl PageTableEntry {
 }
 
 pub struct PageTable {
-    root_ppn: PhysPageNum,
+    root_ppn: PhysPageNum, // 先从根页表开始找
     frames: Vec<FrameTracker>,
 }
 
-/// Assume that it won't oom when creating/mapping.
 impl PageTable {
     pub fn new() -> Self {
         let frame = frame_alloc().unwrap();
@@ -66,7 +65,7 @@ impl PageTable {
             frames: vec![frame],
         }
     }
-    /// Temporarily used to get arguments from user space.
+    /// satp 寄存器的低44位值其实就是 ppn
     pub fn from_token(satp: usize) -> Self {
         Self {
             root_ppn: PhysPageNum::from(satp & ((1usize << 44) - 1)),

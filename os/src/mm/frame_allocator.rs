@@ -1,3 +1,6 @@
+/*!
+  帧分配器，负责用户程序的物理内存分配功能
+*/
 use super::{PhysAddr, PhysPageNum};
 use crate::config::MEMORY_END;
 use crate::sync::UPIntrFreeCell;

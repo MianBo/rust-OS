@@ -57,7 +57,7 @@ impl TaskControlBlock {
         let kstack = kstack_alloc();
         let kstack_top = kstack.get_top();
         Self {
-            process: Arc::downgrade(&process),
+            process: Arc::downgrade(&process), // 引用计数减一
             kstack,
             inner: unsafe {
                 UPIntrFreeCell::new(TaskControlBlockInner {

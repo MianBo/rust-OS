@@ -1,3 +1,6 @@
+/*!
+  地址转换，负责用户程序的虚拟地址到物理地址的转换功能，包括VPA，VPN， PA，PPN
+*/
 use super::PageTableEntry;
 use crate::config::{PAGE_SIZE, PAGE_SIZE_BITS};
 use core::fmt::{self, Debug, Formatter};

@@ -71,9 +71,7 @@ impl MemorySet {
             self.areas.remove(idx);
         }
     }
-    /// Add a new MapArea into this MemorySet.
-    /// Assuming that there are no conflicts in the virtual address
-    /// space.
+
     pub fn push(&mut self, mut map_area: MapArea, data: Option<&[u8]>) {
         map_area.map(&mut self.page_table);
         if let Some(data) = data {
@@ -81,7 +79,6 @@ impl MemorySet {
         }
         self.areas.push(map_area);
     }
-    /// Mention that trampoline is not collected by areas.
     fn map_trampoline(&mut self) {
         self.page_table.map(
             VirtAddr::from(TRAMPOLINE).into(),
@@ -89,20 +86,10 @@ impl MemorySet {
             PTEFlags::R | PTEFlags::X,
         );
     }
-    /// Without kernel stacks.
     pub fn new_kernel() -> Self {
         let mut memory_set = Self::new_bare();
-        // map trampoline
+        // 跳板
         memory_set.map_trampoline();
-        // map kernel sections
-        // println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
-        // println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
-        // println!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
-        // println!(
-        //     ".bss [{:#x}, {:#x})",
-        //     sbss_with_stack as usize, ebss as usize
-        // );
-        // println!("mapping .text section");
         memory_set.push(
             MapArea::new(
                 (stext as usize).into(),
@@ -214,13 +201,11 @@ impl MemorySet {
     }
     pub fn from_existed_user(user_space: &MemorySet) -> MemorySet {
         let mut memory_set = Self::new_bare();
-        // map trampoline
+
         memory_set.map_trampoline();
-        // copy data sections/trap_context/user_stack
         for area in user_space.areas.iter() {
             let new_area = MapArea::from_another(area);
             memory_set.push(new_area, None);
-            // copy data from another space
             for vpn in area.vpn_range {
                 let src_ppn = user_space.translate(vpn).unwrap().ppn();
                 let dst_ppn = memory_set.translate(vpn).unwrap().ppn();
@@ -342,7 +327,6 @@ impl MapArea {
 pub enum MapType {
     Identical,
     Framed,
-    /// offset of page num
     Linear(isize),
 }
 
