@@ -13,11 +13,11 @@ pub enum Protocol{
 
 
 pub struct Socket {
-    pub raddr: IPv4,                // remote address
-    pub lport: u16,                 // local port
-    pub rport: u16,                 // rempote port
-    pub protocol: Protocol, // protocol type: udp or tcp
-    pub buffers: VecDeque<Vec<u8>>, // datas
+    pub raddr: IPv4,                
+    pub lport: u16,                 
+    pub rport: u16,                
+    pub protocol: Protocol, 
+    pub buffers: VecDeque<Vec<u8>>,
     pub seq: u32,
     pub ack: u32,
 }
@@ -27,7 +27,6 @@ lazy_static! {
         unsafe { UPIntrFreeCell::new(Vec::new()) };
 }
 
-/// get the seq and ack by socket index
 pub fn get_s_a_by_index(index: usize) -> Option<(u32, u32)> {
     let socket_table = SOCKET_TABLE.exclusive_access();
 
@@ -129,8 +128,7 @@ pub fn pop_data(index: usize) -> Option<Vec<u8>> {
 
     socket_table[index].as_mut().unwrap().buffers.pop_front()
 }
-/// 暂时先不 merge
-#[warn(dead_code)]
+/// 暂时先不 merge 到代码中
 pub fn get_protocol_by_index(index: usize) -> Option<Protocol>{
     let socket_table = SOCKET_TABLE.exclusive_access();
     assert!(index < socket_table.len());
