@@ -14,6 +14,7 @@ impl Log for SimpleLogger {
         if !self.enabled(record.metadata()) {
             return;
         }
+        // 不同日志级别对应不同颜色
         let color = match record.level() {
             Level::Error => 31, // Red
             Level::Warn => 93,  // BrightYellow

@@ -58,7 +58,7 @@ pub fn rust_main() -> ! {
     clear_bss();
     logging::init();
     mm::init();
-    UART.init(); // ns16550a 其实现基于字符设备抽象
+    UART.init(); // ns16550a 的实现基于字符设备抽象
     info!("KERN: init gpu");
     let _gpu = GPU_DEVICE.clone();
     info!("KERN: init keyboard");
